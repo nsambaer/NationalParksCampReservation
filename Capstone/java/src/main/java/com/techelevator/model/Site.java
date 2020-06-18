@@ -51,11 +51,11 @@ public class Site {
 	public void setCampgroundId(long campgroundId) {
 		this.campgroundId = campgroundId;
 	}
-	public int getSiteMumber() {
+	public int getSiteNumber() {
 		return siteNumber;
 	}
-	public void setSiteMumber(int siteMumber) {
-		this.siteNumber = siteMumber;
+	public void setSiteNumber(int siteNumber) {
+		this.siteNumber = siteNumber;
 	}
 	public int getMaxOccupancy() {
 		return maxOccupancy;
@@ -75,11 +75,11 @@ public class Site {
 	public void setMaxRvLength(int maxRvLength) {
 		this.maxRvLength = maxRvLength;
 	}
-	public boolean isUntilities() {
+	public boolean isUtilities() {
 		return utilities;
 	}
-	public void setUntilities(boolean untilities) {
-		this.utilities = untilities;
+	public void setUtilities(boolean utilities) {
+		this.utilities = utilities;
 	} 
 	
 	
