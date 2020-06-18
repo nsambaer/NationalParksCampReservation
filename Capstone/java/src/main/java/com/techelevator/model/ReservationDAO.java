@@ -6,7 +6,7 @@ public interface ReservationDAO {
 
 	public List<Reservation> getReservationsBySiteId(long siteId);
 	
-	public Reservation createReservation(long siteId);
+	public Reservation createReservation(Reservation newRes);
 	
 	
 	
