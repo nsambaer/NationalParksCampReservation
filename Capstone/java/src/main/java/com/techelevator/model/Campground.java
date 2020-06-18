@@ -67,13 +67,13 @@ public class Campground {
 	public long getCampgroundId() {
 		return campgroundId;
 	}
-	public void setCampground_id(long campgroundId) {
+	public void setCampgroundId(long campgroundId) {
 		this.campgroundId = campgroundId;
 	}
 	public long getParkId() {
 		return parkId;
 	}
-	public void setPark_id(long parkId) {
+	public void setParkId(long parkId) {
 		this.parkId = parkId;
 	}
 	public String getName() {

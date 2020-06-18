@@ -43,7 +43,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 		camp.setOpenMonth(results.getInt("open_from_mm"));
 		camp.setCloseMonth(results.getInt("open_to_mm"));
 		camp.setDailyFee(results.getInt("daily_fee"));
-		return camp;		
+		return camp;
 	}
 	
 	

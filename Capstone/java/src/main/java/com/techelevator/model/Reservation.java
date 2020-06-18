@@ -9,7 +9,7 @@ public class Reservation {
 	private String name; 
 	private LocalDate fromDate; 
 	private LocalDate toDate; 
-	private String createDate;
+	private LocalDate createDate;
 	
 	
 	
@@ -49,10 +49,10 @@ public class Reservation {
 	public void setToDate(LocalDate toDate) {
 		this.toDate = toDate;
 	}
-	public String getCreateDate() {
+	public LocalDate getCreateDate() {
 		return createDate;
 	}
-	public void setCreateDate(String createDate) {
+	public void setCreateDate(LocalDate createDate) {
 		this.createDate = createDate;
 	} 
 
