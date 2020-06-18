@@ -14,12 +14,12 @@ public class Park {
 	
 	// clean up later 
 	public void displayInfo() {
-		System.out.println( "Park Information Screen");
+		System.out.println("Park Information Screen");
 		System.out.println("Location: \t" + location );
 		System.out.println("Established: \t" +  establishDate);
 		System.out.println("Area: \t" + area + " Sq  km");
-		System.out.println( "Annula Visitors: \t" + visitors);
-		System.out.println( ); 
+		System.out.println("Annual Visitors: \t" + visitors);
+		System.out.println(); 
 		System.out.println(description);
 		
 	}

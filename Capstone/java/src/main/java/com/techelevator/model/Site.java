@@ -4,19 +4,19 @@ public class Site {
 
 	private long siteId; 
 	private long campgroundId; 
-	private int siteMumber; 
+	private int siteNumber; 
 	private int maxOccupancy; 
 	private boolean accessible; 
 	private int maxRvLength; 
-	private boolean untilities;
+	private boolean utilities;
 	
 	
 	
 	
-	public void displayInfo( int siteCost) {
+	public void displayInfo(int siteCost) {
 		
-		System.out.println( siteId + "\t \t \t" + maxOccupancy + "\t \t \t" + accessible + "\t \t \t" + maxRvLength
-				+ "\t \t \t" + untilities + "\t \t \t" + siteCost);
+		System.out.println(siteNumber + "\t \t \t" + maxOccupancy + "\t \t \t" + accessible + "\t \t \t" + maxRvLength
+				+ "\t \t \t" + utilities + "\t \t \t" + siteCost);
 	}
 	
 	
@@ -52,10 +52,10 @@ public class Site {
 		this.campgroundId = campgroundId;
 	}
 	public int getSiteMumber() {
-		return siteMumber;
+		return siteNumber;
 	}
 	public void setSiteMumber(int siteMumber) {
-		this.siteMumber = siteMumber;
+		this.siteNumber = siteMumber;
 	}
 	public int getMaxOccupancy() {
 		return maxOccupancy;
@@ -76,10 +76,10 @@ public class Site {
 		this.maxRvLength = maxRvLength;
 	}
 	public boolean isUntilities() {
-		return untilities;
+		return utilities;
 	}
 	public void setUntilities(boolean untilities) {
-		this.untilities = untilities;
+		this.utilities = untilities;
 	} 
 	
 	
