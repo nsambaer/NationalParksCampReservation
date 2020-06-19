@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import com.techelevator.model.Campground;
 import com.techelevator.model.Park;
 import com.techelevator.model.jdbc.JDBCCampgroundDAO;
 import com.techelevator.model.jdbc.JDBCParkDAO;
@@ -25,6 +26,12 @@ public class CampgroundCLI {
 	private List<Park> parkList;
 	private Park chosenPark;
 	private Menu menu;
+	private JDBCParkDAO pDAO;  
+	private JDBCSiteDAO sDAO; 
+	private JDBCReservationDAO rDAO;  
+	private JDBCCampgroundDAO cDAO; 
+	
+	private List<Campground> campList; 
 
 	public static void main(String[] args) {
 		BasicDataSource dataSource = new BasicDataSource();
@@ -37,17 +44,17 @@ public class CampgroundCLI {
 	}
 
 	public CampgroundCLI(DataSource datasource) {
-		JDBCParkDAO pDAO = new JDBCParkDAO(datasource);
-		JDBCSiteDAO sDAO = new JDBCSiteDAO(datasource);
-		JDBCReservationDAO rDAO = new JDBCReservationDAO(datasource);
-		JDBCCampgroundDAO cDAO = new JDBCCampgroundDAO(datasource);
-		parkList = pDAO.getAllParks();
+		pDAO = new JDBCParkDAO(datasource);
+		sDAO = new JDBCSiteDAO(datasource);
+		rDAO = new JDBCReservationDAO(datasource);
+		cDAO = new JDBCCampgroundDAO(datasource);
 		menu = new Menu(System.in, System.out);
 	}
 
 	public void run() {
 
 		MainMenu mainMenu = new MainMenu(System.in, System.out);
+		parkList = pDAO.getAllParks();
 
 		String[] parkNames = new String[parkList.size()];
 
@@ -66,18 +73,18 @@ public class CampgroundCLI {
 						chosenPark = p;
 					}
 				}
-				chosenPark.displayInfo();
-				parkMenu(chosenPark.getParkId());
+				parkMenu();
 			}
 		}
 
 	}
 
-	private void parkMenu(long parkId) {
+	private void parkMenu() {
+		chosenPark.displayInfo();
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(PARK_MENU_OPTIONS);
 			if (choice.equals(MENU_OPTION_VIEW_CAMPGROUNDS)) {
-				// campMenu(parkId);
+				 campMenu();
 			} else if (choice.equals(MENU_OPTION_SEARCH_FOR_RESERVATON)) {
 				// searchParkWide();
 			} else if (choice.equals(MENU_OPTION_RETURN)) {
@@ -88,4 +95,19 @@ public class CampgroundCLI {
 
 	}
 
+	private void campMenu() {
+		campList = cDAO.getCampgroundsByParkId(chosenPark.getParkId()); 
+		displayCampgrounds(); 
+	}
+	private void displayCampgrounds() {
+		System.out.println("Park Campgrounds");
+		System.out.println( chosenPark.getName() + " National Park Campgrounds " );
+		System.out.println( );
+		System.out.println( "\tName \t \t \tOpen \t\tClose \t\tDaily Fee");
+	 for (Campground c: campList) {
+		 c.displayInfo();
+	 }
+	}
+	
+	
 }
