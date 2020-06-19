@@ -34,7 +34,9 @@ public class JDBCSiteDAO implements SiteDAO {
 		while (results.next() && listCount < 5) {
 			int siteId = results.getInt("site_id");
 			try {
-				LocalDate resFromDate = (results.getDate("from_date").toLocalDate()); //this and the line below will throw null exception if date is null
+				LocalDate resFromDate = (results.getDate("from_date").toLocalDate()); // this and the line below will
+																						// throw null exception if date
+																						// is null
 				LocalDate resToDate = (results.getDate("to_date").toLocalDate());
 				if (fromDate.isAfter(resFromDate) && fromDate.isBefore(resToDate)) {
 					blackList.add(siteId);
@@ -55,6 +57,44 @@ public class JDBCSiteDAO implements SiteDAO {
 			}
 		}
 
+		return siteList;
+	}
+
+	public List<Site> getOpenSitesPW(long parkId, LocalDate fromDate, LocalDate toDate) {
+
+		List<Site> siteList = new ArrayList<>();
+		List<Integer> blackList = new ArrayList<>();
+
+		String sqlgetSiteCampId = "SELECT * FROM site s LEFT JOIN reservation r ON s.site_id = r.site_id "
+				+ "INNER JOIN campground c ON s.campground_id = c.campground_id WHERE c.park_id = ?";
+		SqlRowSet results = executeSQL.queryForRowSet(sqlgetSiteCampId);
+		int listCount = 0;
+		while (results.next() && listCount < 5) {
+			int siteId = results.getInt("site_id");
+			try {
+				LocalDate resFromDate = (results.getDate("from_date").toLocalDate()); // this and the line below will
+																						// throw null exception if date
+																						// is null
+				LocalDate resToDate = (results.getDate("to_date").toLocalDate());
+				if (fromDate.isAfter(resFromDate) && fromDate.isBefore(resToDate)) {
+					blackList.add(siteId);
+				} else if (toDate.isAfter(resFromDate) && toDate.isBefore(resToDate)) {
+					blackList.add(siteId);
+				}
+			} catch (NullPointerException e) {
+				// eating null exception because that means that there are no reservations for
+				// that site
+			}
+			if (blackList.contains(siteId)) {
+
+			} else {
+				Site site = mapRowToSite(results);
+				siteList.add(site);
+				blackList.add(siteId);
+				listCount++;
+
+			}
+		}
 		return siteList;
 	}
 

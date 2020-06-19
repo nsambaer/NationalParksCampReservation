@@ -1,6 +1,7 @@
 package com.techelevator;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -62,7 +63,7 @@ public class CampgroundCLI {
 	public void run() {
 		beginMenu();
 	}
-	
+
 	public void beginMenu() {
 
 		MainMenu mainMenu = new MainMenu(System.in, System.out);
@@ -98,7 +99,7 @@ public class CampgroundCLI {
 			if (choice.equals(MENU_OPTION_VIEW_CAMPGROUNDS)) {
 				campMenu();
 			} else if (choice.equals(MENU_OPTION_SEARCH_FOR_RESERVATON)) {
-				// searchParkWide();
+				searchParkWide();
 			} else if (choice.equals(MENU_OPTION_RETURN)) {
 				break;
 			}
@@ -130,6 +131,12 @@ public class CampgroundCLI {
 			LocalDate fromDate = fromDateChoice();
 			LocalDate toDate = toDateChoice();
 
+			if (fromDate.getMonthValue() < campChoice.getOpenMonth()) {
+				System.out.println("The park has not open yet.");
+			}
+			if (toDate.getMonthValue() > campChoice.getCloseMonth()) {
+				System.out.println("The park has closed for the year.");
+			}
 			if (toDate.isBefore(fromDate)) {
 				System.out.println("You entered a departure before your arrival. Please try again.");
 				continue;
@@ -153,11 +160,53 @@ public class CampgroundCLI {
 		}
 	}
 
+	private void searchParkWide() {
+		while (true) {
+
+			LocalDate fromDate = fromDateChoice();
+			LocalDate toDate = toDateChoice();
+
+//		if (fromDate.getMonthValue() < campChoice.getOpenMonth()) {
+//			System.out.println("The park has not open yet.");
+//		}
+//		if (toDate.getMonthValue() > campChoice.getCloseMonth()) {
+//			System.out.println("The park has closed for the year.");
+//		}
+			if (toDate.isBefore(fromDate)) {
+				System.out.println("You entered a departure before your arrival. Please try again.");
+				continue;
+			}
+
+			List<Site> openSite = sDAO.getOpenSitesPW(chosenPark.getParkId(), fromDate, toDate);
+
+			if (openSite.size() == 0) {
+				System.out.println("There are no available sites.");
+				continue;
+			}
+			System.out.println("Site Number\t\tOccupancy\t\tAccesible\t\tRVLength\t\tUtilities\t\tSite Cost");
+			for (Site s : openSite) {
+				for (Campground c : campList) {
+					if (c.getCampgroundId() == s.getCampgroundId()) {
+						s.displayInfo(c.getDailyFee());
+					}
+				}
+			}
+			Site chosenSite = siteChoice(openSite);
+			if (chosenSite == null) {
+				break;
+			}
+			String resName = resNameChoice();
+			createReservation(chosenSite.getSiteId(), resName, fromDate, toDate);
+
+		}
+
+	}
+
 	private void displayCampgrounds() {
 		System.out.println("Park Campgrounds");
 		System.out.println(chosenPark.getName() + " National Park Campgrounds ");
 		System.out.println();
-		System.out.println("\tName\t\tOpen\t\tClose\t\tDaily Fee");
+		System.out.println("Camp No.  Name                             Open          Close          Daily Fee");
 		for (Campground c : campList) {
 			c.displayInfo();
 		}
@@ -278,7 +327,7 @@ public class CampgroundCLI {
 
 	private String resNameChoice() {
 		Object name = null;
-		
+
 		while (name == null) {
 
 			System.out.println("Enter a name to make a reservation under:  ");
@@ -293,10 +342,10 @@ public class CampgroundCLI {
 				System.out.println("Invalid Input");
 			}
 		}
-		
+
 		return (String) name;
 	}
-	
+
 	private void createReservation(long siteId, String name, LocalDate fromDate, LocalDate toDate) {
 		Reservation newRes = new Reservation();
 		newRes.setSiteId(siteId);
@@ -304,11 +353,11 @@ public class CampgroundCLI {
 		newRes.setFromDate(fromDate);
 		newRes.setToDate(toDate);
 		newRes.setCreateDate(LocalDate.now());
-		
+
 		newRes = rDAO.createReservation(newRes);
-		
+
 		System.out.println("The reservation has been made and the confirmation id is " + newRes.getReservationId());
 		beginMenu();
 	}
-	
+
 }

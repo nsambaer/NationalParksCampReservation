@@ -62,25 +62,25 @@ public class Campground {
 	public void displayInfo() {
 		String formatId = String.valueOf(campgroundId);
 		int idLength = formatId.length();
-		for (int i = 0; i <= (10 - idLength); i++) {
+		for (int i = 0; i <= (8 - idLength); i++) {
 			formatId += " ";
 		}
 		
 		String formatName = name;
 		int nameLength = formatName.length();
-		for (int i = 0; i <= (33 - nameLength); i++) {
+		for (int i = 0; i <= (32 - nameLength); i++) {
 			formatName += " ";
 		}
 		
 		String formatOpen = monthName(openMonth);
 		int openLength = formatOpen.length();
-		for (int i = 0; i <= (14 - openLength); i++) {
+		for (int i = 0; i <= (13 - openLength); i++) {
 			formatOpen += " ";
 		}
 		
 		String formatClose = monthName(closeMonth);
 		int closeLength = formatClose.length();
-		for (int i = 0; i <= (15 - closeLength); i++) {
+		for (int i = 0; i <= (14 - closeLength); i++) {
 			formatClose += " ";
 		}
 		
