@@ -2,7 +2,9 @@ package com.techelevator.model.jdbc;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -23,22 +25,28 @@ public class JDBCSiteDAO implements SiteDAO {
 	@Override
 	public List<Site> getOpenSites(long campId, LocalDate fromDate, LocalDate toDate) {
 		List<Site> siteList = new ArrayList<>();
+		List<Integer> blackList = new ArrayList<>();
 
 		String sqlgetSiteCampId = "SELECT * FROM site s INNER JOIN reservation r ON s.site_id = r.site_id "
 				+ "WHERE campground_id = ?";
 		SqlRowSet results = executeSQL.queryForRowSet(sqlgetSiteCampId, campId);
-			int listCount = 0; 
+		int listCount = 0;
 		while (results.next() && listCount < 5) {
+			int siteId = results.getInt("site_id");
 			LocalDate resFromDate = (results.getDate("from_date").toLocalDate());
 			LocalDate resToDate = (results.getDate("to_date").toLocalDate());
 			if (fromDate.isAfter(resFromDate) && fromDate.isBefore(resToDate)) {
-				continue;
+				blackList.add(siteId);
 			} else if (toDate.isAfter(resFromDate) && toDate.isBefore(resToDate)) {
-				continue;
+				blackList.add(siteId);
+			} 
+			if (blackList.contains(siteId)) {
+			
 			} else {
 				Site site = mapRowToSite(results);
 				siteList.add(site);
-				listCount ++; 
+				blackList.add(siteId);
+				listCount++;
 			}
 		}
 

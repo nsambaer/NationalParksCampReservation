@@ -1,5 +1,6 @@
 package com.techelevator.model.jdbc;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import com.techelevator.model.Park;
 import com.techelevator.model.Reservation;
 import com.techelevator.model.ReservationDAO;
 
@@ -37,12 +37,12 @@ public class JDBCReservationDAO implements ReservationDAO {
 
 	@Override
 	public Reservation createReservation(Reservation newRes) {
+				
 		String sqlInsertNewReservation = "INSERT INTO reservation (site_id, name, from_date, to_date, create_date) VALUES (?,?,?,?,?) RETURNING reservation_id";
-		Long resId = executeSQL.queryForObject(sqlInsertNewReservation, Long.class, newRes.getName(), newRes.getFromDate(), newRes.getToDate(),
-				newRes.getCreateDate());
+		Long resId = executeSQL.queryForObject(sqlInsertNewReservation, Long.class, newRes.getSiteId(), newRes.getName(), 
+				newRes.getFromDate(), newRes.getToDate(), newRes.getCreateDate());
 		newRes.setReservationId(resId);
-		
-		
+				
 		return newRes;
 	}
 	

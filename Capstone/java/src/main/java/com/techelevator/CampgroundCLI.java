@@ -10,6 +10,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.techelevator.model.Campground;
 import com.techelevator.model.Park;
+import com.techelevator.model.Reservation;
 import com.techelevator.model.Site;
 import com.techelevator.model.jdbc.JDBCCampgroundDAO;
 import com.techelevator.model.jdbc.JDBCParkDAO;
@@ -59,6 +60,10 @@ public class CampgroundCLI {
 	}
 
 	public void run() {
+		beginMenu();
+	}
+	
+	public void beginMenu() {
 
 		MainMenu mainMenu = new MainMenu(System.in, System.out);
 		parkList = pDAO.getAllParks();
@@ -122,19 +127,28 @@ public class CampgroundCLI {
 			if (campChoice == null) {
 				break;
 			}
-		LocalDate fromDate = fromDateChoice();
-		LocalDate toDate = toDateChoice();
-	
-		List <Site> openSite = sDAO.getOpenSites(campChoice.getCampgroundId(), fromDate, toDate);
-		for( Site s: openSite) {
-			s.displayInfo(campChoice.getDailyFee());
-		}
-		}
-	} 
+			LocalDate fromDate = fromDateChoice();
+			LocalDate toDate = toDateChoice();
 
-	
-	
-	
+			if (toDate.isBefore(fromDate)) {
+				System.out.println("You entered a departure before your arrival. Please try again.");
+				continue;
+			}
+
+			List<Site> openSite = sDAO.getOpenSites(campChoice.getCampgroundId(), fromDate, toDate);
+			System.out.println("Site Number\t\tOccupancy\t\tAccesible\t\tRVLength\t\tUtilities\t\tSite Cost");
+			for (Site s : openSite) {
+				s.displayInfo(campChoice.getDailyFee());
+			}
+			Site chosenSite = siteChoice(openSite);
+			if (chosenSite == null) {
+				break;
+			}
+			String resName = resNameChoice();
+			createReservation(chosenSite.getSiteId(), resName, fromDate, toDate);
+		}
+	}
+
 	private void displayCampgrounds() {
 		System.out.println("Park Campgrounds");
 		System.out.println(chosenPark.getName() + " National Park Campgrounds ");
@@ -182,7 +196,7 @@ public class CampgroundCLI {
 				String input = userInput.nextLine();
 				String[] dateInput = input.split("/");
 				if (dateInput[2].length() != 4) {
-					
+
 					throw ex;
 				}
 				int[] dateArray = new int[dateInput.length];
@@ -201,7 +215,7 @@ public class CampgroundCLI {
 		}
 		return (LocalDate) dateChoice;
 	}
-	
+
 	private LocalDate toDateChoice() {
 		Object dateChoice = null;
 		Exception ex = new Exception();
@@ -212,7 +226,7 @@ public class CampgroundCLI {
 				String input = userInput.nextLine();
 				String[] dateInput = input.split("/");
 				if (dateInput[2].length() != 4) {
-					
+
 					throw ex;
 				}
 				int[] dateArray = new int[dateInput.length];
@@ -231,6 +245,66 @@ public class CampgroundCLI {
 		}
 		return (LocalDate) dateChoice;
 	}
-	
 
+	private Site siteChoice(List<Site> siteList) {
+		Object siteChoice = null;
+		while (siteChoice == null) {
+
+			System.out.println("Which Site? (enter 0 to cancel):  ");
+			try {
+				int input = Integer.valueOf(userInput.nextLine());
+				if (input == 0) {
+					return null;
+				}
+				for (Site s : siteList) {
+					if (input == s.getSiteId()) {
+						siteChoice = s;
+					}
+				}
+
+			} catch (NumberFormatException e) {
+				// eat exception
+			}
+			if (siteChoice == null) {
+				System.out.println("Invalid Input");
+			}
+		}
+		return (Site) siteChoice;
+	}
+
+	private String resNameChoice() {
+		Object name = null;
+		
+		while (name == null) {
+
+			System.out.println("Enter a name to make a reservation under:  ");
+			try {
+				String input = userInput.nextLine();
+				name = input;
+
+			} catch (Exception e) {
+				// eat exception
+			}
+			if (name == null) {
+				System.out.println("Invalid Input");
+			}
+		}
+		
+		return (String) name;
+	}
+	
+	private void createReservation(long siteId, String name, LocalDate fromDate, LocalDate toDate) {
+		Reservation newRes = new Reservation();
+		newRes.setSiteId(siteId);
+		newRes.setName(name);
+		newRes.setFromDate(fromDate);
+		newRes.setToDate(toDate);
+		newRes.setCreateDate(LocalDate.now());
+		
+		newRes = rDAO.createReservation(newRes);
+		
+		System.out.println("The reservation has been made and the confirmation id is " + newRes.getReservationId());
+		beginMenu();
+	}
+	
 }
