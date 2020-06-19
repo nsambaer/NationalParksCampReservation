@@ -116,9 +116,14 @@ public class CampgroundCLI {
 
 	private void searchAvailableReservation() {
 		displayCampgrounds();
-		campgroundChoice();
-		fromDateChoice();
-		//toDateChoice();
+		while (true) {
+			Campground campChoice = campgroundChoice();
+			if (campChoice == null) {
+				break;
+			}
+			fromDateChoice();
+			toDateChoice();
+		}
 	}
 
 	private void displayCampgrounds() {
@@ -132,44 +137,91 @@ public class CampgroundCLI {
 		System.out.println();
 	}
 
-	private int campgroundChoice() {
+	private Campground campgroundChoice() {
 		Object campChoice = null;
 		while (campChoice == null) {
 
 			System.out.println("Which Campground? (enter 0 to cancel):  ");
 			try {
 				int input = Integer.valueOf(userInput.nextLine());
-
-				if (input > -1 && input < campList.size()) {
-					campChoice = input;
+				if (input == 0) {
+					return null;
 				}
+				for (Campground c : campList) {
+					if (input == c.getCampgroundId()) {
+						campChoice = c;
+					}
+				}
+
 			} catch (NumberFormatException e) {
+				// eat exception
+			}
+			if (campChoice == null) {
 				System.out.println("Invalid Input");
 			}
 		}
-		return (int) campChoice;
+		return (Campground) campChoice;
 	}
 
 	private LocalDate fromDateChoice() {
 		Object dateChoice = null;
+		Exception ex = new Exception();
 		while (dateChoice == null) {
 
-			System.out.println(" What is your arrival date? (mm/dd/yyyy):  ");
+			System.out.println("What is your arrival date? (mm/dd/yyyy):  ");
 			try {
 				String input = userInput.nextLine();
-				String [] dayArray = input.split("/");
-				int [] dateArray = new int [dayArray.length]; 
-				for (int i = 0; i < dayArray.length; i++){
-					dateArray[i] = Integer.parseInt(dayArray[i]); 
+				String[] dateInput = input.split("/");
+				if (dateInput[2].length() != 4) {
+					
+					throw ex;
 				}
-				LocalDate date =  LocalDate.of(dateArray[2], dateArray[0], dateArray[1]);
-	
-			
-			} catch (NumberFormatException e) {
+				int[] dateArray = new int[dateInput.length];
+				for (int i = 0; i < dateInput.length; i++) {
+					dateArray[i] = Integer.parseInt(dateInput[i]);
+				}
+				LocalDate date = LocalDate.of(dateArray[2], dateArray[0], dateArray[1]);
+				dateChoice = date;
+
+			} catch (Exception e) {
+				// eat exception
+			}
+			if (dateChoice == null) {
 				System.out.println("Invalid Input");
 			}
 		}
 		return (LocalDate) dateChoice;
 	}
+	
+	private LocalDate toDateChoice() {
+		Object dateChoice = null;
+		Exception ex = new Exception();
+		while (dateChoice == null) {
+
+			System.out.println("What is your departure date? (mm/dd/yyyy):  ");
+			try {
+				String input = userInput.nextLine();
+				String[] dateInput = input.split("/");
+				if (dateInput[2].length() != 4) {
+					
+					throw ex;
+				}
+				int[] dateArray = new int[dateInput.length];
+				for (int i = 0; i < dateInput.length; i++) {
+					dateArray[i] = Integer.parseInt(dateInput[i]);
+				}
+				LocalDate date = LocalDate.of(dateArray[2], dateArray[0], dateArray[1]);
+				dateChoice = date;
+
+			} catch (Exception e) {
+				// eat exception
+			}
+			if (dateChoice == null) {
+				System.out.println("Invalid Input");
+			}
+		}
+		return (LocalDate) dateChoice;
+	}
+	
 
 }
