@@ -1,5 +1,6 @@
 package com.techelevator.model.jdbc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO{
 		camp.setName(results.getString("name"));
 		camp.setOpenMonth(results.getInt("open_from_mm"));
 		camp.setCloseMonth(results.getInt("open_to_mm"));
-		camp.setDailyFee(results.getInt("daily_fee"));
+		camp.setDailyFee(BigDecimal.valueOf(results.getDouble("daily_fee")));
 		return camp;
 	}
 	

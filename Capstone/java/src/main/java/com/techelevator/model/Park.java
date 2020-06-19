@@ -22,10 +22,28 @@ public class Park {
 		System.out.println("Area: \t" + area + " Sq  km");
 		System.out.println("Annual Visitors: \t" + visitors);
 		System.out.println();
-		System.out.println(description);
+		formatDescription();
 
 	}
-
+	//trying to print the description with newline characters. need to account for word length somehow
+	private void formatDescription() {
+		int length = description.length();
+		int y = 100;
+		for (int x = 0; x < length; x += 100) {
+			try {
+				System.out.println(description.substring(x,y));
+				}
+			catch (StringIndexOutOfBoundsException e) {
+				System.out.println(description.substring(x));
+			}
+			finally {y += 100;}
+		}
+			
+	}
+		
+	
+	
+	
 	public long getParkId() {
 
 		return parkId;

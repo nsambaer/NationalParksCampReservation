@@ -1,5 +1,7 @@
 package com.techelevator.model;
 
+import java.math.BigDecimal;
+
 public class Campground {
 	
 	private long campgroundId; 
@@ -7,7 +9,7 @@ public class Campground {
 	private String name; 
 	private int openMonth; 
 	private int closeMonth; 
-	private int dailyFee;
+	private BigDecimal dailyFee;
 	
 	
 	public String monthName(int month) {
@@ -94,10 +96,10 @@ public class Campground {
 	public void setCloseMonth(int closeMonth) {
 		this.closeMonth = closeMonth;
 	}
-	public int getDailyFee() {
+	public BigDecimal getDailyFee() {
 		return dailyFee;
 	}
-	public void setDailyFee(int dailyFee) {
+	public void setDailyFee(BigDecimal dailyFee) {
 		this.dailyFee = dailyFee;
 	}
 	
