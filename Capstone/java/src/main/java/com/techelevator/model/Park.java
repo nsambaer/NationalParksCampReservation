@@ -16,27 +16,35 @@ public class Park {
 	public void displayInfo() {
 		System.out.println();
 		System.out.println("Park Information Screen");
-		System.out.println(name + "National Park");
-		System.out.println("Location: \t" + location);
-		System.out.println("Established: \t" + establishDate);
-		System.out.println("Area: \t" + area + " Sq  km");
-		System.out.println("Annual Visitors: \t" + visitors);
+		System.out.println(name + " National Park");
+		System.out.println("Location:\t\t" + location);
+		System.out.println("Established:\t\t" + establishDate);
+		System.out.println("Area:\t\t\t" + area + " sq km");
+		System.out.println("Annual Visitors:\t" + visitors);
 		System.out.println();
 		formatDescription();
 
 	}
-	//trying to print the description with newline characters. need to account for word length somehow
+	//prints the description with some newline characters
 	private void formatDescription() {
 		int length = description.length();
-		int y = 100;
-		for (int x = 0; x < length; x += 100) {
+		int end = 100; //var to delineate the end of the substring
+		for (int begin = 0; begin < length; begin += 100) { //want to print 100 characters or so every line
+			int offset = 0; //offset is to keep track of how many characters over 100 we went, need to add to begin *after* substring is printed
 			try {
-				System.out.println(description.substring(x,y));
+				while (!description.substring(end, end + 1).equals(" ")) { //making sure newline doesn't come in the middle of a word
+					end++;
+					offset++;
 				}
-			catch (StringIndexOutOfBoundsException e) {
-				System.out.println(description.substring(x));
+				end++;
+				offset++; //these two increment once to put the newline after the space
+				System.out.println(description.substring(begin,end));
+				begin += offset;
+				}
+			catch (StringIndexOutOfBoundsException e) { //when the last part of the string is less than 100 characters out of bound exception is thrown, and this prints whatever is left
+				System.out.println(description.substring(begin));
 			}
-			finally {y += 100;}
+			finally {end += 100;} //wont auto increment in for loop
 		}
 			
 	}

@@ -24,8 +24,8 @@ public class CampgroundCLI {
 	private static final String MENU_OPTION_RETURN = "Return to Previous Screen";
 	private static final String[] PARK_MENU_OPTIONS = { MENU_OPTION_VIEW_CAMPGROUNDS, MENU_OPTION_SEARCH_FOR_RESERVATON,
 			MENU_OPTION_RETURN };
-	private static final String MENU_OPTION_SEARCH_AVAIABLE_RESERVATION = "Search for Avaiable Reservation";
-	private static final String[] CAMP_MENU_OPTIONS = { MENU_OPTION_SEARCH_AVAIABLE_RESERVATION, MENU_OPTION_RETURN };
+	private static final String MENU_OPTION_SEARCH_AVAILABLE_RESERVATION = "Search for Available Reservation";
+	private static final String[] CAMP_MENU_OPTIONS = { MENU_OPTION_SEARCH_AVAILABLE_RESERVATION, MENU_OPTION_RETURN };
 
 	private List<Park> parkList;
 	private Park chosenPark;
@@ -103,10 +103,10 @@ public class CampgroundCLI {
 
 	private void campMenu() {
 		campList = cDAO.getCampgroundsByParkId(chosenPark.getParkId());
-
+		displayCampgrounds();
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(CAMP_MENU_OPTIONS);
-			if (choice.equals(MENU_OPTION_SEARCH_AVAIABLE_RESERVATION)) {
+			if (choice.equals(MENU_OPTION_SEARCH_AVAILABLE_RESERVATION)) {
 				searchAvailableReservation();
 			} else if (choice.equals(MENU_OPTION_RETURN)) {
 				break;
@@ -117,15 +117,15 @@ public class CampgroundCLI {
 	private void searchAvailableReservation() {
 		displayCampgrounds();
 		campgroundChoice();
-		fromDateChoice(); 
-		toDateChoice(); 
+		fromDateChoice();
+		toDateChoice();
 	}
 
 	private void displayCampgrounds() {
 		System.out.println("Park Campgrounds");
 		System.out.println(chosenPark.getName() + " National Park Campgrounds ");
 		System.out.println();
-		System.out.println("\tName \t \t \tOpen \t\tClose \t\tDaily Fee");
+		System.out.println("\tName\t\tOpen\t\tClose\t\tDaily Fee");
 		for (Campground c : campList) {
 			c.displayInfo();
 		}
@@ -137,17 +137,17 @@ public class CampgroundCLI {
 		while (campChoice == null) {
 
 			System.out.println("Which Campground? (enter 0 to cancel):  ");
-			try { 
-				int input = Integer.valueOf(userInput.nextLine()); 
-				
-				if ( input > -1 && input < campList.size()) {
-					campChoice = input; 
+			try {
+				int input = Integer.valueOf(userInput.nextLine());
+
+				if (input > -1 && input < campList.size()) {
+					campChoice = input;
 				}
 			} catch (NumberFormatException e) {
 				System.out.println("Invalid Input");
 			}
 		}
-		return (int)campChoice; 
+		return (int) campChoice;
 	}
 
 	private LocalDate fromDateChoice() {
@@ -155,20 +155,18 @@ public class CampgroundCLI {
 		while (dateChoice == null) {
 
 			System.out.println(" What is your arrival date? (mm/dd/yyyy):  ");
-			try { 
-				String input = userInput.nextLine(); 
-				String[] dateArray = input.split("/"); 
-				
-				if ( input > -1 && input < campList.size()) {
-					dateChoice = input; 
+			try {
+				String input = userInput.nextLine();
+				String[] dateArray = input.split("/");
+
+				if (input > -1 && input < campList.size()) {
+					dateChoice = input;
 				}
 			} catch (NumberFormatException e) {
 				System.out.println("Invalid Input");
 			}
 		}
-		return (int)dateChoice; 
+		return (int) dateChoice;
 	}
-	
- 	
-	
+
 }

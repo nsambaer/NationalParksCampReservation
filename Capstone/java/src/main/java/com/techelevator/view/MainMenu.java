@@ -39,7 +39,7 @@ public class MainMenu extends Menu {
 			out.println(optionNum + ") " + options[i]);
 		}
 		
-		out.println( "Q) quit");
+		out.println( "Q) Quit");
 		out.print("\nPlease choose an option >>> ");
 		out.flush();
 	}

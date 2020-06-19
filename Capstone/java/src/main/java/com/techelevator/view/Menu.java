@@ -23,6 +23,15 @@ public class Menu {
 		}
 		return choice;
 	}
+	
+	public Object getMultipleChoiceFromOptions(Object[] options, Object[] prompt) {
+		Object choice = null;
+		while (choice == null) {
+			displayMenuOptions(options);
+			choice = getChoiceFromUserInput(options);
+		}
+		return choice;
+	}
 
 	protected Object getChoiceFromUserInput(Object[] options) {
 		Object choice = null;

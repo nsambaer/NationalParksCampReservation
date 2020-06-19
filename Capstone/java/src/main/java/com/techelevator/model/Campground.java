@@ -60,8 +60,8 @@ public class Campground {
 	
 	// need to clean up standardize spacing -- need some logic to print out nice and neat
 	public void displayInfo() {
-		System.out.println("#" + campgroundId + "\t" + name + "\t" + monthName(openMonth)
-		+ "\t" +   monthName(closeMonth) + "\t" + dailyFee);
+		System.out.println("#" + campgroundId + "\t" + name + "\t\t" + monthName(openMonth)
+		+ "\t\t" +   monthName(closeMonth) + "\t$" + dailyFee);
 		
 	}
 	
@@ -101,6 +101,7 @@ public class Campground {
 	}
 	public void setDailyFee(BigDecimal dailyFee) {
 		this.dailyFee = dailyFee;
+		this.dailyFee = this.dailyFee.setScale(2);
 	}
 	
 	
