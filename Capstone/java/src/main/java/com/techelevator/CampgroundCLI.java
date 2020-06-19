@@ -19,14 +19,13 @@ public class CampgroundCLI {
 	private static final String MENU_OPTION_VIEW_CAMPGROUNDS = "View Campgrounds";
 	private static final String MENU_OPTION_SEARCH_FOR_RESERVATON = "Search for Reservation";
 	private static final String MENU_OPTION_RETURN = "Return to Previous Screen";
-	private static final String[] PARK_MENU_OPTIONS = {MENU_OPTION_VIEW_CAMPGROUNDS,  MENU_OPTION_SEARCH_FOR_RESERVATON, MENU_OPTION_RETURN};
-	
-	
+	private static final String[] PARK_MENU_OPTIONS = { MENU_OPTION_VIEW_CAMPGROUNDS, MENU_OPTION_SEARCH_FOR_RESERVATON,
+			MENU_OPTION_RETURN };
+
 	private List<Park> parkList;
 	private Park chosenPark;
 	private Menu menu;
-	
-	
+
 	public static void main(String[] args) {
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setUrl("jdbc:postgresql://localhost:5432/campground");
@@ -43,7 +42,7 @@ public class CampgroundCLI {
 		JDBCReservationDAO rDAO = new JDBCReservationDAO(datasource);
 		JDBCCampgroundDAO cDAO = new JDBCCampgroundDAO(datasource);
 		parkList = pDAO.getAllParks();
-		menu = new Menu(System.in, System.out); 
+		menu = new Menu(System.in, System.out);
 	}
 
 	public void run() {
@@ -57,7 +56,7 @@ public class CampgroundCLI {
 		}
 		while (true) {
 			String choice = (String) mainMenu.getChoiceFromOptions(parkNames);
-			
+
 			if (choice.equals("quit")) {
 				System.exit(1);
 
@@ -73,21 +72,20 @@ public class CampgroundCLI {
 		}
 
 	}
-	
-	private void parkMenu( long parkId) {
+
+	private void parkMenu(long parkId) {
 		while (true) {
-			String choice = (String)menu.getChoiceFromOptions(PARK_MENU_OPTIONS);
-			if ( choice.equals(MENU_OPTION_VIEW_CAMPGROUNDS)) {
-				//campMenu(parkId); 	
-			}else if(choice.equals(MENU_OPTION_SEARCH_FOR_RESERVATON)){ 
-			//	searchParkWide();
-			} else if( choice.equals(MENU_OPTION_RETURN)) {
+			String choice = (String) menu.getChoiceFromOptions(PARK_MENU_OPTIONS);
+			if (choice.equals(MENU_OPTION_VIEW_CAMPGROUNDS)) {
+				// campMenu(parkId);
+			} else if (choice.equals(MENU_OPTION_SEARCH_FOR_RESERVATON)) {
+				// searchParkWide();
+			} else if (choice.equals(MENU_OPTION_RETURN)) {
 				break;
 			}
-			
+
 		}
-		
+
 	}
-	
-	
+
 }
