@@ -118,7 +118,7 @@ public class CampgroundCLI {
 		displayCampgrounds();
 		campgroundChoice();
 		fromDateChoice();
-		toDateChoice();
+		//toDateChoice();
 	}
 
 	private void displayCampgrounds() {
@@ -157,16 +157,19 @@ public class CampgroundCLI {
 			System.out.println(" What is your arrival date? (mm/dd/yyyy):  ");
 			try {
 				String input = userInput.nextLine();
-				String[] dateArray = input.split("/");
-
-				if (input > -1 && input < campList.size()) {
-					dateChoice = input;
+				String [] dayArray = input.split("/");
+				int [] dateArray = new int [dayArray.length]; 
+				for (int i = 0; i < dayArray.length; i++){
+					dateArray[i] = Integer.parseInt(dayArray[i]); 
 				}
+				LocalDate date =  LocalDate.of(dateArray[2], dateArray[0], dateArray[1]);
+	
+			
 			} catch (NumberFormatException e) {
 				System.out.println("Invalid Input");
 			}
 		}
-		return (int) dateChoice;
+		return (LocalDate) dateChoice;
 	}
 
 }
