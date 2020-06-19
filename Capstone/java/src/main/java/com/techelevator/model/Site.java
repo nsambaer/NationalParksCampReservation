@@ -1,5 +1,7 @@
 package com.techelevator.model;
 
+import java.math.BigDecimal;
+
 public class Site {
 
 	private long siteId; 
@@ -13,7 +15,7 @@ public class Site {
 	
 	
 	
-	public void displayInfo(int siteCost) {
+	public void displayInfo(BigDecimal siteCost) {
 		
 		System.out.println(siteNumber + "\t \t \t" + maxOccupancy + "\t \t \t" + accessible + "\t \t \t" + maxRvLength
 				+ "\t \t \t" + utilities + "\t \t \t" + siteCost);

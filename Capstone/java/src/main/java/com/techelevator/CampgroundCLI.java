@@ -10,6 +10,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.techelevator.model.Campground;
 import com.techelevator.model.Park;
+import com.techelevator.model.Site;
 import com.techelevator.model.jdbc.JDBCCampgroundDAO;
 import com.techelevator.model.jdbc.JDBCParkDAO;
 import com.techelevator.model.jdbc.JDBCReservationDAO;
@@ -121,11 +122,19 @@ public class CampgroundCLI {
 			if (campChoice == null) {
 				break;
 			}
-			fromDateChoice();
-			toDateChoice();
+		LocalDate fromDate = fromDateChoice();
+		LocalDate toDate = toDateChoice();
+	
+		List <Site> openSite = sDAO.getOpenSites(campChoice.getCampgroundId(), fromDate, toDate);
+		for( Site s: openSite) {
+			s.displayInfo(campChoice.getDailyFee());
 		}
-	}
+		}
+	} 
 
+	
+	
+	
 	private void displayCampgrounds() {
 		System.out.println("Park Campgrounds");
 		System.out.println(chosenPark.getName() + " National Park Campgrounds ");
