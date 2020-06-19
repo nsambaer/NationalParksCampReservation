@@ -136,6 +136,10 @@ public class CampgroundCLI {
 			}
 
 			List<Site> openSite = sDAO.getOpenSites(campChoice.getCampgroundId(), fromDate, toDate);
+			if (openSite.size() == 0) {
+				System.out.println("There are no available sites.");
+				continue;
+			}
 			System.out.println("Site Number\t\tOccupancy\t\tAccesible\t\tRVLength\t\tUtilities\t\tSite Cost");
 			for (Site s : openSite) {
 				s.displayInfo(campChoice.getDailyFee());

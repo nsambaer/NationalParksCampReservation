@@ -58,7 +58,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 		reserv.setToDate(results.getDate("to_date").toLocalDate());
 		reserv.setCreateDate(results.getDate("create_date").toLocalDate());
 		
-		return reserv;		
+		return reserv;
 	}
 	
 

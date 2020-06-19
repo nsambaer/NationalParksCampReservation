@@ -27,21 +27,26 @@ public class JDBCSiteDAO implements SiteDAO {
 		List<Site> siteList = new ArrayList<>();
 		List<Integer> blackList = new ArrayList<>();
 
-		String sqlgetSiteCampId = "SELECT * FROM site s INNER JOIN reservation r ON s.site_id = r.site_id "
+		String sqlgetSiteCampId = "SELECT * FROM site s LEFT JOIN reservation r ON s.site_id = r.site_id "
 				+ "WHERE campground_id = ?";
 		SqlRowSet results = executeSQL.queryForRowSet(sqlgetSiteCampId, campId);
 		int listCount = 0;
 		while (results.next() && listCount < 5) {
 			int siteId = results.getInt("site_id");
-			LocalDate resFromDate = (results.getDate("from_date").toLocalDate());
-			LocalDate resToDate = (results.getDate("to_date").toLocalDate());
-			if (fromDate.isAfter(resFromDate) && fromDate.isBefore(resToDate)) {
-				blackList.add(siteId);
-			} else if (toDate.isAfter(resFromDate) && toDate.isBefore(resToDate)) {
-				blackList.add(siteId);
-			} 
+			try {
+				LocalDate resFromDate = (results.getDate("from_date").toLocalDate()); //this and the line below will throw null exception if date is null
+				LocalDate resToDate = (results.getDate("to_date").toLocalDate());
+				if (fromDate.isAfter(resFromDate) && fromDate.isBefore(resToDate)) {
+					blackList.add(siteId);
+				} else if (toDate.isAfter(resFromDate) && toDate.isBefore(resToDate)) {
+					blackList.add(siteId);
+				}
+			} catch (NullPointerException e) {
+				// eating null exception because that means that there are no reservations for
+				// that site
+			}
 			if (blackList.contains(siteId)) {
-			
+
 			} else {
 				Site site = mapRowToSite(results);
 				siteList.add(site);
