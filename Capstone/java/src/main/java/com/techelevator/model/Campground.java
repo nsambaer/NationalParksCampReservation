@@ -56,12 +56,35 @@ public class Campground {
 		return name; 
 	}
 		
-	
-	
+	//           The Unnamed Primitive Campsites
+//	Camp No.  Name                             Open          Close          Daily Fee
 	// need to clean up standardize spacing -- need some logic to print out nice and neat
 	public void displayInfo() {
-		System.out.println("#" + campgroundId + "\t" + name + "\t\t" + monthName(openMonth)
-		+ "\t\t" +   monthName(closeMonth) + "\t$" + dailyFee);
+		String formatId = String.valueOf(campgroundId);
+		int idLength = formatId.length();
+		for (int i = 0; i <= (10 - idLength); i++) {
+			formatId += " ";
+		}
+		
+		String formatName = name;
+		int nameLength = formatName.length();
+		for (int i = 0; i <= (33 - nameLength); i++) {
+			formatName += " ";
+		}
+		
+		String formatOpen = monthName(openMonth);
+		int openLength = formatOpen.length();
+		for (int i = 0; i <= (14 - openLength); i++) {
+			formatOpen += " ";
+		}
+		
+		String formatClose = monthName(closeMonth);
+		int closeLength = formatClose.length();
+		for (int i = 0; i <= (15 - closeLength); i++) {
+			formatClose += " ";
+		}
+		
+		System.out.println("#" + formatId + formatName + formatOpen + formatClose + "$" + dailyFee);
 		
 	}
 	
