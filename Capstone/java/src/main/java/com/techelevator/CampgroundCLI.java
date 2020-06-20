@@ -142,7 +142,7 @@ public class CampgroundCLI {
 				continue;
 			}
 
-			List<Site> openSite = sDAO.getOpenSites(campChoice.getCampgroundId(), fromDate, toDate);
+			List<Site> openSite = sDAO.getSitesFromCampId(campChoice.getCampgroundId());
 			if (openSite.size() == 0) {
 				System.out.println("There are no available sites.");
 				continue;
@@ -177,7 +177,7 @@ public class CampgroundCLI {
 				continue;
 			}
 
-			List<Site> openSite = sDAO.getOpenSitesPW(chosenPark.getParkId(), fromDate, toDate);
+			List<Site> openSite = sDAO.getSitesFromAllCampsAtPark(chosenPark.getParkId());
 
 			if (openSite.size() == 0) {
 				System.out.println("There are no available sites.");
@@ -310,7 +310,7 @@ public class CampgroundCLI {
 					return null;
 				}
 				for (Site s : siteList) {
-					if (input == s.getSiteId()) {
+					if (input == s.getSiteNumber()) {
 						siteChoice = s;
 					}
 				}
