@@ -1,9 +1,11 @@
 package com.techelevator;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Stack;
 
 import javax.sql.DataSource;
 
@@ -38,7 +40,6 @@ public class CampgroundCLI {
 	private JDBCReservationDAO rDAO;
 	private JDBCCampgroundDAO cDAO;
 	private Scanner userInput;
-
 	private List<Campground> campList;
 
 	public static void main(String[] args) {
@@ -84,6 +85,7 @@ public class CampgroundCLI {
 				for (Park p : parkList) {
 					if (choice.equals(p.getName())) {
 						chosenPark = p;
+						campList = cDAO.getCampgroundsByParkId(chosenPark.getParkId());
 					}
 				}
 				parkMenu();
@@ -109,7 +111,6 @@ public class CampgroundCLI {
 	}
 
 	private void campMenu() {
-		campList = cDAO.getCampgroundsByParkId(chosenPark.getParkId());
 		displayCampgrounds();
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(CAMP_MENU_OPTIONS);
@@ -143,40 +144,18 @@ public class CampgroundCLI {
 			}
 
 			List<Site> siteList = sDAO.getSitesFromCampId(campChoice.getCampgroundId());
-			List<Site> openSite = new ArrayList<>();
-			for (Site s : siteList) {
-				boolean siteAvailable = true;
-				List<Reservation> siteRes = rDAO.getReservationsBySiteId(s.getSiteId());
-				if (siteRes.size() == 0) {
-					openSite.add(s);
-					continue;
-				}
-
-				for (Reservation r : siteRes) {
-
-					LocalDate resFromDate = r.getFromDate();
-					LocalDate resToDate = (r.getToDate());
-					if ((fromDate.compareTo(resFromDate) > -1) && (fromDate.compareTo(resToDate) < 1)) {
-						siteAvailable = false;
-					} else if ((toDate.compareTo(resFromDate) > -1) && (toDate.compareTo(resToDate) < 1)) {
-						siteAvailable = false;
-					}
-				}
-				if (siteAvailable) {
-					openSite.add(s);
-				}
-				if (openSite.size() == 5) {
-					break;
-				}
-			}
+			List<Site> openSite = findOpenSites(siteList, fromDate, toDate);
 
 			if (openSite.size() == 0) {
 				System.out.println("There are no available sites.");
 				continue;
 			}
-			System.out.println("Site Number\t\tOccupancy\t\tAccesible\t\tRVLength\t\tUtilities\t\tSite Cost");
+			
+			BigDecimal cost = getCost(campChoice, fromDate, toDate);
+			
+			System.out.println("Site Number\tMax Occupancy\tAccesible?\tRVLength\tUtilities\tSite Cost");
 			for (Site s : openSite) {
-				s.displayInfo(campChoice.getDailyFee());
+				s.displayInfo(cost);
 			}
 			Site chosenSite = siteChoice(openSite);
 			if (chosenSite == null) {
@@ -192,55 +171,47 @@ public class CampgroundCLI {
 
 			LocalDate fromDate = fromDateChoice();
 			LocalDate toDate = toDateChoice();
-
-//		if (fromDate.getMonthValue() < campChoice.getOpenMonth()) {
-//			System.out.println("The park has not open yet.");
-//		}
-//		if (toDate.getMonthValue() > campChoice.getCloseMonth()) {
-//			System.out.println("The park has closed for the year.");
-//		}
+			Stack<Integer> removeCamp = new Stack<>();
+			
+			for (int x = 0; x < campList.size(); x++) {
+				Campground c = campList.get(x);
+				if (fromDate.getMonthValue() < c.getOpenMonth()) {
+					removeCamp.add(x);
+				}
+				else if (toDate.getMonthValue() > c.getCloseMonth()) {
+					removeCamp.add(x);
+				}
+			}
+			while(!removeCamp.empty()) {
+				campList.remove((int)removeCamp.pop());
+			}
+			
+			if (campList.isEmpty()) {
+				System.out.println("There are no campgrounds open during your time frame.");
+				continue;
+			}
+			
 			if (toDate.isBefore(fromDate)) {
 				System.out.println("You entered a departure before your arrival. Please try again.");
 				continue;
 			}
 
 			List<Site> siteList = sDAO.getSitesFromAllCampsAtPark(chosenPark.getParkId());
-			List<Site> openSite = new ArrayList<>();
-			for (Site s : siteList) {
-				boolean siteAvailable = true;
-				List<Reservation> siteRes = rDAO.getReservationsBySiteId(s.getSiteId());
-				if (siteRes.size() == 0) {
-					openSite.add(s);
-					continue;
-				}
-
-				for (Reservation r : siteRes) {
-
-					LocalDate resFromDate = r.getFromDate();
-					LocalDate resToDate = (r.getToDate());
-					if ((fromDate.compareTo(resFromDate) > -1) && (fromDate.compareTo(resToDate) < 1)) {
-						siteAvailable = false;
-					} else if ((toDate.compareTo(resFromDate) > -1) && (toDate.compareTo(resToDate) < 1)) {
-						siteAvailable = false;
-					}
-				}
-				if (siteAvailable) {
-					openSite.add(s);
-				}
-				if (openSite.size() == 5) {
-					break;
-				}
-			}
+			List<Site> openSite = findOpenSites(siteList, fromDate, toDate);
 
 			if (openSite.size() == 0) {
 				System.out.println("There are no available sites.");
 				continue;
 			}
-			System.out.println("Site Number\t\tOccupancy\t\tAccesible\t\tRVLength\t\tUtilities\t\tSite Cost");
+			
+			
+			System.out.println("Campgound\tSite Number\tMax Occupancy\tAccesible?\tRVLength\tUtilities\tSite Cost");
 			for (Site s : openSite) {
 				for (Campground c : campList) {
 					if (c.getCampgroundId() == s.getCampgroundId()) {
-						s.displayInfo(c.getDailyFee());
+						BigDecimal cost = getCost(c, fromDate, toDate);
+						System.out.print(c.getName() + "\t");
+						s.displayInfo(cost);
 					}
 				}
 			}
@@ -413,4 +384,40 @@ public class CampgroundCLI {
 		beginMenu();
 	}
 
+	private List<Site> findOpenSites(List<Site> siteList, LocalDate fromDate, LocalDate toDate) {
+		List<Site> openSite = new ArrayList<>();
+		for (Site s : siteList) {
+			if (openSite.size() > 5) {
+				break;
+			}
+			boolean siteAvailable = true;
+			List<Reservation> siteRes = rDAO.getReservationsBySiteId(s.getSiteId());
+			if (siteRes.size() == 0) {
+				openSite.add(s);
+				continue;
+			}
+
+			for (Reservation r : siteRes) {
+
+				LocalDate resFromDate = r.getFromDate();
+				LocalDate resToDate = (r.getToDate());
+				if ((fromDate.compareTo(resFromDate) > -1) && (fromDate.compareTo(resToDate) < 1)) {
+					siteAvailable = false;
+				} else if ((toDate.compareTo(resFromDate) > -1) && (toDate.compareTo(resToDate) < 1)) {
+					siteAvailable = false;
+				}
+			}
+			if (siteAvailable) {
+				openSite.add(s);
+			}
+		}
+
+		return openSite;
+	}
+
+	private BigDecimal getCost(Campground campChoice, LocalDate fromDate, LocalDate toDate) {
+		BigDecimal stayLength = BigDecimal.valueOf(Double.valueOf((toDate.compareTo(fromDate) + 1)));
+		return campChoice.getDailyFee().multiply(stayLength).setScale(2);
+	}
+	
 }
