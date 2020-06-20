@@ -142,7 +142,34 @@ public class CampgroundCLI {
 				continue;
 			}
 
-			List<Site> openSite = sDAO.getSitesFromCampId(campChoice.getCampgroundId());
+			List<Site> siteList = sDAO.getSitesFromCampId(campChoice.getCampgroundId());
+			List<Site> openSite = new ArrayList<>();
+			for (Site s : siteList) {
+				boolean siteAvailable = true;
+				List<Reservation> siteRes = rDAO.getReservationsBySiteId(s.getSiteId());
+				if (siteRes.size() == 0) {
+					openSite.add(s);
+					continue;
+				}
+
+				for (Reservation r : siteRes) {
+
+					LocalDate resFromDate = r.getFromDate();
+					LocalDate resToDate = (r.getToDate());
+					if ((fromDate.compareTo(resFromDate) > -1) && (fromDate.compareTo(resToDate) < 1)) {
+						siteAvailable = false;
+					} else if ((toDate.compareTo(resFromDate) > -1) && (toDate.compareTo(resToDate) < 1)) {
+						siteAvailable = false;
+					}
+				}
+				if (siteAvailable) {
+					openSite.add(s);
+				}
+				if (openSite.size() == 5) {
+					break;
+				}
+			}
+
 			if (openSite.size() == 0) {
 				System.out.println("There are no available sites.");
 				continue;
@@ -177,7 +204,33 @@ public class CampgroundCLI {
 				continue;
 			}
 
-			List<Site> openSite = sDAO.getSitesFromAllCampsAtPark(chosenPark.getParkId());
+			List<Site> siteList = sDAO.getSitesFromAllCampsAtPark(chosenPark.getParkId());
+			List<Site> openSite = new ArrayList<>();
+			for (Site s : siteList) {
+				boolean siteAvailable = true;
+				List<Reservation> siteRes = rDAO.getReservationsBySiteId(s.getSiteId());
+				if (siteRes.size() == 0) {
+					openSite.add(s);
+					continue;
+				}
+
+				for (Reservation r : siteRes) {
+
+					LocalDate resFromDate = r.getFromDate();
+					LocalDate resToDate = (r.getToDate());
+					if ((fromDate.compareTo(resFromDate) > -1) && (fromDate.compareTo(resToDate) < 1)) {
+						siteAvailable = false;
+					} else if ((toDate.compareTo(resFromDate) > -1) && (toDate.compareTo(resToDate) < 1)) {
+						siteAvailable = false;
+					}
+				}
+				if (siteAvailable) {
+					openSite.add(s);
+				}
+				if (openSite.size() == 5) {
+					break;
+				}
+			}
 
 			if (openSite.size() == 0) {
 				System.out.println("There are no available sites.");
