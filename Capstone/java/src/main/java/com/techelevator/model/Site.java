@@ -13,37 +13,27 @@ public class Site {
 	private boolean utilities;
 
 	public void displayInfo(BigDecimal siteCost) {
-
-		System.out.println(siteNumber + "\t\t" + maxOccupancy + "\t\t" + accessible + "\t\t" + maxRvLength + "\t\t"
-				+ utilities + "\t\t$" + siteCost);
-	}
-	
-	
-//	if (accessible = yes  ) {
-//		return true; 
-//	} else { 
-//	return false; 
-//	}
-//	public long getSiteId() {
-//		return siteId;
-	
+		String rvString = "N/A";
+		if (maxRvLength != 0) {
+			rvString = String.valueOf(maxRvLength);
+		}
+		String accessibleString = "No";
+		if (accessible) {
+			accessibleString = "Yes";
+		}
+		String utilitiesString = "No";
+		if (utilities) {
+			utilitiesString = "Yes";
+		}
 		
-//		
-//	boolean accessible;
-//		while (true) {
-//		  accessible ;
-//		  if (answer.equals(true)) {
-//		    yn = true;
-//		    break;
-//		  } else if (answer.equals(false)) {
-//		    yn = false;
-//		    break;
-//		  } else {
-//		     System.out.println("Yes");
-//		  }
-//		}
-//	
-	
+		System.out.println(siteNumber + "\t\t" + maxOccupancy + "\t\t" + accessibleString + "\t\t" + rvString + "\t\t"
+				+ utilitiesString + "\t\t$" + siteCost);
+	}
+
+	public long getSiteId() {
+		return siteId;
+	}
+
 	public void setSiteId(long siteId) {
 		this.siteId = siteId;
 	}
