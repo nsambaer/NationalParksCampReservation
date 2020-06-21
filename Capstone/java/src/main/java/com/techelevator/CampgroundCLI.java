@@ -35,12 +35,14 @@ public class CampgroundCLI {
 	private List<Park> parkList;
 	private Park chosenPark;
 	private Menu menu;
+	private MainMenu mainMenu;
 	private JDBCParkDAO pDAO;
 	private JDBCSiteDAO sDAO;
 	private JDBCReservationDAO rDAO;
 	private JDBCCampgroundDAO cDAO;
 	private Scanner userInput;
 	private List<Campground> campList;
+	private String[] parkNames;
 
 	public static void main(String[] args) {
 		BasicDataSource dataSource = new BasicDataSource();
@@ -48,6 +50,7 @@ public class CampgroundCLI {
 		dataSource.setUsername("postgres");
 		dataSource.setPassword("postgres1");
 
+		
 		CampgroundCLI application = new CampgroundCLI(dataSource);
 		application.run();
 	}
@@ -62,23 +65,24 @@ public class CampgroundCLI {
 	}
 
 	public void run() {
+		mainMenu = new MainMenu(System.in, System.out);
+		parkList = pDAO.getAllParks();
+		
+		parkNames = new String[parkList.size()];
+		
+		for (int i = 0; i < parkNames.length; i++) {
+			parkNames[i] = parkList.get(i).getName();
+		}
 		beginMenu();
 	}
 
 	public void beginMenu() {
-
-		MainMenu mainMenu = new MainMenu(System.in, System.out);
-		parkList = pDAO.getAllParks();
-
-		String[] parkNames = new String[parkList.size()];
-
-		for (int i = 0; i < parkNames.length; i++) {
-			parkNames[i] = parkList.get(i).getName();
-		}
 		while (true) {
 			String choice = (String) mainMenu.getChoiceFromOptions(parkNames);
 
 			if (choice.equals("quit")) {
+				
+				userInput.close();
 				System.exit(1);
 
 			} else {
@@ -123,8 +127,8 @@ public class CampgroundCLI {
 	}
 
 	private void searchAvailableReservation() {
-		displayCampgrounds();
 		while (true) {
+			displayCampgrounds();
 			Campground campChoice = campgroundChoice();
 			if (campChoice == null) {
 				break;
@@ -133,10 +137,12 @@ public class CampgroundCLI {
 			LocalDate toDate = toDateChoice();
 
 			if (fromDate.getMonthValue() < campChoice.getOpenMonth()) {
-				System.out.println("The park has not open yet.");
+				System.out.println("The campground has not opened yet.");
+				continue;
 			}
 			if (toDate.getMonthValue() > campChoice.getCloseMonth()) {
-				System.out.println("The park has closed for the year.");
+				System.out.println("The campground has closed for the year.");
+				continue;
 			}
 			if (toDate.isBefore(fromDate)) {
 				System.out.println("You entered a departure before your arrival. Please try again.");
@@ -146,7 +152,7 @@ public class CampgroundCLI {
 			List<Site> siteList = sDAO.getSitesFromCampId(campChoice.getCampgroundId());
 			List<Site> openSite = findOpenSites(siteList, fromDate, toDate);
 
-			if (openSite.size() == 0) {
+			if (openSite.isEmpty()) {
 				System.out.println("There are no available sites.");
 				continue;
 			}
@@ -227,6 +233,7 @@ public class CampgroundCLI {
 	}
 
 	private void displayCampgrounds() {
+		System.out.println();
 		System.out.println("Park Campgrounds");
 		System.out.println(chosenPark.getName() + " National Park Campgrounds ");
 		System.out.println();
@@ -392,7 +399,7 @@ public class CampgroundCLI {
 			}
 			boolean siteAvailable = true;
 			List<Reservation> siteRes = rDAO.getReservationsBySiteId(s.getSiteId());
-			if (siteRes.size() == 0) {
+			if (siteRes.isEmpty()) {
 				openSite.add(s);
 				continue;
 			}

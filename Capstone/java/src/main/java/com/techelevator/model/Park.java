@@ -12,7 +12,7 @@ public class Park {
 	private int visitors;
 	private String description;
 
-	// clean up later
+	
 	public void displayInfo() {
 		System.out.println();
 		System.out.println("Park Information Screen");

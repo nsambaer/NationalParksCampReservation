@@ -39,7 +39,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 	public Reservation createReservation(Reservation newRes) {
 				
 		String sqlInsertNewReservation = "INSERT INTO reservation (site_id, name, from_date, to_date, create_date) VALUES (?,?,?,?,?) RETURNING reservation_id";
-		Long resId = executeSQL.queryForObject(sqlInsertNewReservation, Long.class, newRes.getSiteId(), newRes.getName(), 
+		long resId = executeSQL.queryForObject(sqlInsertNewReservation, Long.class, newRes.getSiteId(), newRes.getName(), 
 				newRes.getFromDate(), newRes.getToDate(), newRes.getCreateDate());
 		newRes.setReservationId(resId);
 				
