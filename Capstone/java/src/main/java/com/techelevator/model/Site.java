@@ -17,11 +17,33 @@ public class Site {
 		System.out.println(siteNumber + "\t\t" + maxOccupancy + "\t\t" + accessible + "\t\t" + maxRvLength + "\t\t"
 				+ utilities + "\t\t$" + siteCost);
 	}
-
-	public long getSiteId() {
-		return siteId;
-	}
-
+	
+	
+//	if (accessible = yes  ) {
+//		return true; 
+//	} else { 
+//	return false; 
+//	}
+//	public long getSiteId() {
+//		return siteId;
+	
+		
+//		
+//	boolean accessible;
+//		while (true) {
+//		  accessible ;
+//		  if (answer.equals(true)) {
+//		    yn = true;
+//		    break;
+//		  } else if (answer.equals(false)) {
+//		    yn = false;
+//		    break;
+//		  } else {
+//		     System.out.println("Yes");
+//		  }
+//		}
+//	
+	
 	public void setSiteId(long siteId) {
 		this.siteId = siteId;
 	}
