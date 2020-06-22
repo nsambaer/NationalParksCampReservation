@@ -1,6 +1,7 @@
 package com.techelevator;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,6 @@ public class CampgroundCLI {
 		dataSource.setUsername("postgres");
 		dataSource.setPassword("postgres1");
 
-		
 		CampgroundCLI application = new CampgroundCLI(dataSource);
 		application.run();
 	}
@@ -67,21 +67,20 @@ public class CampgroundCLI {
 	public void run() {
 		mainMenu = new MainMenu(System.in, System.out);
 		parkList = pDAO.getAllParks();
-		
+
 		parkNames = new String[parkList.size()];
-		
+
 		for (int i = 0; i < parkNames.length; i++) {
 			parkNames[i] = parkList.get(i).getName();
 		}
 		beginMenu();
 	}
 
-	public void beginMenu() {
+	public void beginMenu(){
 		while (true) {
 			String choice = (String) mainMenu.getChoiceFromOptions(parkNames);
 
 			if (choice.equals("quit")) {
-				
 				userInput.close();
 				System.exit(1);
 
@@ -156,9 +155,9 @@ public class CampgroundCLI {
 				System.out.println("There are no available sites.");
 				continue;
 			}
-			
+
 			BigDecimal cost = getCost(campChoice, fromDate, toDate);
-			
+
 			System.out.println("Site Number\tMax Occupancy\tAccesible?\tRVLength\tUtilities\tSite Cost");
 			for (Site s : openSite) {
 				s.displayInfo(cost);
@@ -178,25 +177,24 @@ public class CampgroundCLI {
 			LocalDate fromDate = fromDateChoice();
 			LocalDate toDate = toDateChoice();
 			Stack<Integer> removeCamp = new Stack<>();
-			
+
 			for (int x = 0; x < campList.size(); x++) {
 				Campground c = campList.get(x);
 				if (fromDate.getMonthValue() < c.getOpenMonth()) {
 					removeCamp.add(x);
-				}
-				else if (toDate.getMonthValue() > c.getCloseMonth()) {
+				} else if (toDate.getMonthValue() > c.getCloseMonth()) {
 					removeCamp.add(x);
 				}
 			}
-			while(!removeCamp.empty()) {
-				campList.remove((int)removeCamp.pop());
+			while (!removeCamp.empty()) {
+				campList.remove((int) removeCamp.pop());
 			}
-			
+
 			if (campList.isEmpty()) {
 				System.out.println("There are no campgrounds open during your time frame.");
 				continue;
 			}
-			
+
 			if (toDate.isBefore(fromDate)) {
 				System.out.println("You entered a departure before your arrival. Please try again.");
 				continue;
@@ -209,8 +207,7 @@ public class CampgroundCLI {
 				System.out.println("There are no available sites.");
 				continue;
 			}
-			
-			
+
 			System.out.println("Campgound\tSite Number\tMax Occupancy\tAccesible?\tRVLength\tUtilities\tSite Cost");
 			for (Site s : openSite) {
 				for (Campground c : campList) {
@@ -426,5 +423,4 @@ public class CampgroundCLI {
 		BigDecimal stayLength = BigDecimal.valueOf(Double.valueOf((toDate.compareTo(fromDate) + 1)));
 		return campChoice.getDailyFee().multiply(stayLength).setScale(2);
 	}
-	
 }

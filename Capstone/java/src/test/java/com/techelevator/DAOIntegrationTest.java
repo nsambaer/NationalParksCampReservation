@@ -9,6 +9,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
+import com.techelevator.model.jdbc.JDBCCampgroundDAO;
+
 public abstract class DAOIntegrationTest {
 
 	/* Using this particular implementation of DataSource so that
